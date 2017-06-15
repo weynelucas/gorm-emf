@@ -14,9 +14,21 @@ class EntityRegistry {
      * @param entityType Class of entity to register
      * @param collectionName Name of the collection (or table) to register entity (default value
      * is the simple name of entityType class)
+     * @param doWithChildren Boolean to tell EntityRegistry to register all children entities too
      */
-    static registerEntity(Class<EObject> entityType, String collectionName = '') {
-        entityType.metaClass.static."get${InjectedProperties.COLLECTION.capitalize()}" = { ->
+    static registerEntity(Class<EObject> entityType, String collectionName = '', boolean doWithChildren = true) {
+
+        entityType.metaClass.static."get${InjectedProperties.COLLECTION.capitalize()}" = getCollectionNameClosure(entityType, collectionName)
+
+        if (doWithChildren) {
+            entityType.getDerivedClasses().each { derivedType ->
+                derivedType.instanceClass.metaClass.static."get${InjectedProperties.COLLECTION.capitalize()}" = getCollectionNameClosure(derivedType, collectionName)
+            }
+        }
+    }
+
+    private static getCollectionNameClosure(entityType, collectionName) {
+        return { ->
             return collectionName?.trim() ?: entityType.simpleName.toLowerCase()
         }
     }

@@ -132,7 +132,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
     }
 
     /**
-     * Check if EObject has childrens (derived classes)
+     * Check if EObject has children (derived classes)
      *
      * @return Boolean checking if the given EObject has derived classes
      */
