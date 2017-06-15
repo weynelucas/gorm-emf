@@ -130,6 +130,17 @@ class EObjectExtensions extends DynamicExtension<EObject> {
     }
 
     /**
+     * Check if EObject has childrens (derived classes)
+     *
+     * @return Boolean checking if the given EObject has derived classes
+     */
+    static boolean hasDerivedClasses (Class<EObject> selfType) {
+        def eClass = eObjectService.getEClass(selfType.metaClass.theClass)
+        eObjectService.hasDerivedClasses(eClass)
+    }
+
+
+    /**
      * Create a default EObject instance
      *
      * @return EObject instance with default values

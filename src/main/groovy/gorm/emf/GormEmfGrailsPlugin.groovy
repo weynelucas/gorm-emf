@@ -44,7 +44,7 @@ A set of methods and services to perform persistence like GORM to Java classes g
 
     Closure doWithSpring() { {->
             eObjectPersistenceService(EObjectMongoPersistenceService) {
-                mongo = ref('ref')
+                mongo = ref('mongo')
             }
 
             eObjectService(EObjectService) {

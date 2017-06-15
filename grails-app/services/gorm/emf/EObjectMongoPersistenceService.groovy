@@ -7,6 +7,8 @@ import org.eclipse.emf.ecore.EObject
 @Transactional
 class EObjectMongoPersistenceService implements IEObjectPersistence {
 
+    def mongo
+
     @Override
     def insert(EObject object, String resource) {
         return null

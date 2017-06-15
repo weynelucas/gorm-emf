@@ -16,6 +16,6 @@ class EntityRegistry {
      * is the simple name of entityType class)
      */
     static registerEntity(Class<EObject> entityType, String collectionName = '') {
-        entityType.metaClass.static."$COLLECTION" = collectionName?.trim() ?: entityType.simpleName
+        entityType.metaClass.static."$COLLECTION" = collectionName?.trim() ?: entityType.simpleName.toLowerCase()
     }
 }

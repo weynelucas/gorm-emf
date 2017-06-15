@@ -10,23 +10,29 @@ class EObjectService {
 
     EObjectWrapper eObjectWrapper
 
+    static derivedClassesClosure = { EObject eObj ->
+        def eObjCls
+        def eObjClf = eObjectWrapper.getEClassifier(eObj.name)
+
+        try {
+            eObjCls = eObjectWrapper.getEClass(eObj.name)
+        } catch (ignored) {
+            eObjCls = null
+        }
+
+        return (eObjClf instanceof EClass) && eObjCls != eClass && eClass.isSuperTypeOf(eObjCls)
+    }
+
     def getEClass(modelType) {
         eObjectWrapper.getEClass(modelType)
     }
 
     def findDerivedClasses(EClass eClass) {
-        return eObjectWrapper.ecorePackage.eContents().findAll { EObject eObj ->
-            def eObjCls
-            def eObjClf = eObjectWrapper.getEClassifier(eObj.name)
+        return eObjectWrapper.ecorePackage.eContents().findAll(derivedClassesClosure)
+    }
 
-            try {
-                eObjCls = eObjectWrapper.getEClass(eObj.name)
-            } catch (ignored) {
-                eObjCls = null
-            }
-
-            return (eObjClf instanceof EClass) && eObjCls != eClass && eClass.isSuperTypeOf(eObjCls)
-        }
+    boolean hasDerivedClasses(EClass eClass) {
+        return eObjectWrapper.ecorePackage.eContents().any(derivedClassesClosure)
     }
 
     def generateDefaultInstance(modelType) {
