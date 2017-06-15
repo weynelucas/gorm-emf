@@ -4,6 +4,7 @@ import org.eclipse.emf.common.util.BasicEList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EStructuralFeature
+import static gorm.emf.consts.EObjectConstants.ExternalProperties.TYPE_DISCRIMINATOR
 
 /**
  * Created by lucasferreira on 25/05/2017.
@@ -17,7 +18,7 @@ class EReferenceManyAppender implements IEObjectAppender {
         return  feature.many &&
                 feature instanceof EReference &&
                 appendData instanceof List<Map> &&
-                (!isAbstract || (isAbstract && appendData.every { data -> data.containsKey(consts.EObjectConstants.ExternalProperties.getTYPE_DISCRIMINATOR) }))
+                (!isAbstract || (isAbstract && appendData.every { data -> data.containsKey(TYPE_DISCRIMINATOR) }))
     }
 
     @Override
@@ -26,7 +27,7 @@ class EReferenceManyAppender implements IEObjectAppender {
         model."$reference.name" = new BasicEList<EObject>()
 
         appendData.each { data ->
-            def type = reference.loadReferenceType(data.get(consts.EObjectConstants.ExternalProperties.getTYPE_DISCRIMINATOR, ''))
+            def type = reference.loadReferenceType(data.get(TYPE_DISCRIMINATOR, ''))
             model."$reference.name".add(type.newInstance(data))
         }
     }

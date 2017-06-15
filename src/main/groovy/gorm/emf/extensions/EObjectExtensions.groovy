@@ -139,7 +139,6 @@ class EObjectExtensions extends DynamicExtension<EObject> {
         eObjectService.hasDerivedClasses(eClass)
     }
 
-
     /**
      * Create a default EObject instance
      *

@@ -1,6 +1,7 @@
 package gorm.emf
 
 import gorm.emf.extensions.EObjectExtensions
+import gorm.emf.extensions.EReferenceExtensions
 import gorm.emf.extensions.registry.DynamicExtensionRegistry
 import grails.plugins.*
 
@@ -43,20 +44,23 @@ A set of methods and services to perform persistence like GORM to Java classes g
 //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     Closure doWithSpring() { {->
-            eObjectPersistenceService(EObjectMongoPersistenceService) {
-                mongo = ref('mongo')
-            }
-
-            eObjectService(EObjectService) {
-                eObjectWrapper = ref('eObjectWrapper')
-            }
-
-            // Extensions beans
-            eObjectExtensions(EObjectExtensions) {
-                eObjectService = ref('eObjectService')
-            }
+        eObjectPersistenceService(EObjectMongoPersistenceService) {
+            mongo = ref('mongo')
         }
-    }
+
+        eObjectService(EObjectService) {
+            eObjectWrapper = ref('eObjectWrapper')
+        }
+
+        // Extensions beans
+        eReferenceExtensions(EReferenceExtensions) {
+            eObjectService = ref('eObjectService')
+        }
+        eObjectExtensions(EObjectExtensions) {
+            eObjectService = ref('eObjectService')
+        }
+
+    } }
 
     void doWithDynamicMethods() {
         DynamicExtensionRegistry.enableGlobally()
