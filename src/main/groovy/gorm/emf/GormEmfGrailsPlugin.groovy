@@ -2,6 +2,7 @@ package gorm.emf
 
 import gorm.emf.extensions.EObjectExtensions
 import gorm.emf.extensions.EReferenceExtensions
+
 import gorm.emf.extensions.registry.DynamicExtensionRegistry
 import grails.plugins.*
 
@@ -58,8 +59,8 @@ A set of methods and services to perform persistence like GORM to Java classes g
         }
         eObjectExtensions(EObjectExtensions) {
             eObjectService = ref('eObjectService')
+            eObjectPersistenceService = ref('eObjectPersistenceService')
         }
-
     } }
 
     void doWithDynamicMethods() {

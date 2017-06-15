@@ -1,7 +1,7 @@
 package gorm.emf.ecore.persistence
 
 import org.eclipse.emf.ecore.EObject
-import static gorm.emf.consts.EObjectConstants.InjectedProperties.COLLECTION
+import gorm.emf.consts.EObjectConstants.InjectedProperties
 
 /**
  * Created by Lucas Weyne on 14/06/2017.
@@ -16,6 +16,8 @@ class EntityRegistry {
      * is the simple name of entityType class)
      */
     static registerEntity(Class<EObject> entityType, String collectionName = '') {
-        entityType.metaClass.static."$COLLECTION" = collectionName?.trim() ?: entityType.simpleName.toLowerCase()
+        entityType.metaClass.static."get${InjectedProperties.COLLECTION.capitalize()}" = { ->
+            return collectionName?.trim() ?: entityType.simpleName.toLowerCase()
+        }
     }
 }

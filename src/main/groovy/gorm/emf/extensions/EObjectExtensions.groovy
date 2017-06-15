@@ -3,6 +3,7 @@ package gorm.emf.extensions
 import com.sun.corba.se.spi.ior.ObjectId
 import gorm.emf.EObjectService
 import gorm.emf.ecore.appenders.EObjectAppendersFactory
+import gorm.emf.ecore.persistence.IEObjectPersistence
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
@@ -18,6 +19,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
 
 
     static EObjectService eObjectService
+    static IEObjectPersistence eObjectPersistenceService
 
 
    /**
@@ -124,7 +126,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      *
      * @return List with all children classes of the given EObject
      */
-    static getDerivedClasses (Class<EObject> selfType) {
+    static getDerivedClasses(Class<EObject> selfType) {
         def eClass = eObjectService.getEClass(selfType.metaClass.theClass)
         eObjectService.findDerivedClasses(eClass)
     }
@@ -134,7 +136,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      *
      * @return Boolean checking if the given EObject has derived classes
      */
-    static boolean hasDerivedClasses (Class<EObject> selfType) {
+    static boolean hasDerivedClasses(Class<EObject> selfType) {
         def eClass = eObjectService.getEClass(selfType.metaClass.theClass)
         eObjectService.hasDerivedClasses(eClass)
     }
@@ -144,7 +146,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      *
      * @return EObject instance with default values
      */
-    static  newInstance (Class<EObject> selfType) {
+    static  newInstance(Class<EObject> selfType) {
         eObjectService.generateDefaultInstance(selfType.metaClass.theClass)
     }
 
@@ -155,7 +157,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      * @param map LinkedHashMap with properties and values to create the instance
      * @return EObject instance with default values
      */
-    static newInstance (Class<EObject> selfType, Map map) {
+    static newInstance(Class<EObject> selfType, Map map) {
         selfType.newInstance(map, true)
     }
 
@@ -165,10 +167,38 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      *
      * @param map LinkedHashMap with properties and values to create the instance
      * @param handleReferences Boolean to enable/disable EReference appends
-     * @return
+     * @return EObject instance filled by map
      */
-    static  newInstance (Class<EObject> selfType, Map map, boolean handleReferences)  {
+    static newInstance(Class<EObject> selfType, Map map, boolean handleReferences)  {
         def defaultInstance = selfType.newInstance()
         defaultInstance.append(map, handleReferences)
+    }
+
+    /**
+     * Get an EObject instance from database based on id
+     *
+     * @param id Hash corresponding to EObject identifier
+     * @return EObject instance or null if not found
+     */
+    static find(Class<EObject> selfType, String id) {
+        selfType.find(id, true)
+    }
+
+    /**
+     * Get an EObject instance from database based on id
+     *
+     * @param id Hash corresponding to EObject identifier
+     * @param handleReferences Boolean to enable/disable EReference appends
+     * @return EObject instance or null if not found
+     */
+    static find(Class<EObject> selfType, String id, boolean handleReferences) {
+        def dbObj = eObjectPersistenceService.findById(id, selfType."$InjectedProperties.COLLECTION")
+        if(dbObj) {
+            def obj = selfType.newInstance(dbObj, handleReferences)
+
+            return obj
+        }
+
+        return null
     }
 }

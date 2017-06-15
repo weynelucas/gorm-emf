@@ -8,19 +8,21 @@ import org.eclipse.emf.ecore.EObject
 @Transactional
 class EObjectService {
 
-    EObjectWrapper eObjectWrapper
+    static EObjectWrapper eObjectWrapper
 
-    static derivedClassesClosure = { EObject eObj ->
-        def eObjCls
-        def eObjClf = eObjectWrapper.getEClassifier(eObj.name)
+    private static getDerivedClassesClosure(EClass eClass) {
+        return { EObject eObj ->
+            def eObjCls
+            def eObjClf = eObjectWrapper.getEClassifier(eObj.name)
 
-        try {
-            eObjCls = eObjectWrapper.getEClass(eObj.name)
-        } catch (ignored) {
-            eObjCls = null
+            try {
+                eObjCls = eObjectWrapper.getEClass(eObj.name)
+            } catch (ignored) {
+                eObjCls = null
+            }
+
+            return (eObjClf instanceof EClass) && eObjCls != eClass && eClass.isSuperTypeOf(eObjCls)
         }
-
-        return (eObjClf instanceof EClass) && eObjCls != eClass && eClass.isSuperTypeOf(eObjCls)
     }
 
     def getEClass(modelType) {
@@ -28,11 +30,11 @@ class EObjectService {
     }
 
     def findDerivedClasses(EClass eClass) {
-        return eObjectWrapper.ecorePackage.eContents().findAll(derivedClassesClosure)
+        return eObjectWrapper.ecorePackage.eContents().findAll(getDerivedClassesClosure(eClass))
     }
 
     boolean hasDerivedClasses(EClass eClass) {
-        return eObjectWrapper.ecorePackage.eContents().any(derivedClassesClosure)
+        return eObjectWrapper.ecorePackage.eContents().any(getDerivedClassesClosure(eClass))
     }
 
     def generateDefaultInstance(modelType) {
