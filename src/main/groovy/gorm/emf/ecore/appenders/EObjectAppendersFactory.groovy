@@ -13,7 +13,9 @@ class EObjectAppendersFactory {
     static getAppenders() {
         if (eModelAppenders == null) {
             eModelAppenders = [
-                    new EAttributeAppender(),
+                    new EAttributeSingleAppender(),
+                    new EAttributeManyAppender(),
+                    new EAttributeEnumeratorAppender(),
                     new EReferenceSingleAppender(),
                     new EReferenceManyAppender()
             ]
