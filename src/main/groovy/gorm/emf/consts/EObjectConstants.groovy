@@ -13,6 +13,7 @@ class EObjectConstants {
     class InjectedProperties implements DeclaredFieldsGetter {
         static String ID = "_id"
         static String REFERENCE = "ref"
+        static String COLLECTION = "collection"
     }
 
     /**
