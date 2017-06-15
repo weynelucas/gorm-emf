@@ -1,9 +1,9 @@
 package gorm.emf.extensions
 
-import com.sun.corba.se.spi.ior.ObjectId
 import gorm.emf.EObjectService
 import gorm.emf.ecore.appenders.EObjectAppendersFactory
 import gorm.emf.ecore.persistence.IEObjectPersistence
+import org.bson.types.ObjectId
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
