@@ -5,6 +5,8 @@ import gorm.emf.extensions.EObjectExtensions
 import gorm.emf.extensions.EReferenceExtensions
 
 import gorm.emf.extensions.registry.DynamicExtensionRegistry
+import gorm.emf.interceptors.EObjectInterceptions
+import gorm.emf.interceptors.registry.DynamicInterceptionRegistry
 import grails.plugins.*
 
 class GormEmfGrailsPlugin extends Plugin {
@@ -65,10 +67,16 @@ A set of methods and services to perform persistence like GORM to Java classes g
             eObjectService = ref('eObjectService')
             eObjectPersistenceService = ref('eObjectPersistenceService')
         }
+
+        // Interceptions beans
+        eObjectInterceptions(EObjectInterceptions) {
+            eObjectWrapper = ref('eObjectWrapper')
+        }
     } }
 
     void doWithDynamicMethods() {
         DynamicExtensionRegistry.enableGlobally()
+        DynamicInterceptionRegistry.enableGlobally()
     }
 
     void doWithApplicationContext() {

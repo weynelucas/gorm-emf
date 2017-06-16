@@ -9,9 +9,7 @@ import grails.util.Holders
 class DynamicExtensionRegistry {
 
     static enableGlobally() {
-        def grailsApplication = Holders.getGrailsApplication()
-
-        grailsApplication.mainContext.getBeansOfType(DynamicExtension).each { beanName, bean ->
+        Holders.grailsApplication.mainContext.getBeansOfType(DynamicExtension).each { beanName, bean ->
             bean.registerDynamicMethods()
         }
     }
