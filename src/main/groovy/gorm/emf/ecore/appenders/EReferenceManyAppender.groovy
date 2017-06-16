@@ -24,11 +24,13 @@ class EReferenceManyAppender implements IEObjectAppender {
     @Override
     void append(EObject model, EStructuralFeature feature, appendData) {
         def reference = (EReference) feature
-        model."$reference.name" = new BasicEList<EObject>()
+        def eListData = new BasicEList<EObject>()
 
         appendData.each { data ->
             def type = reference.loadReferenceType(data.get(TYPE_DISCRIMINATOR, ''))
-            model."$reference.name".add(type.newInstance(data))
+            eListData.add(type.newInstance(data))
         }
+
+        model."$reference.name" = eListData
     }
 }
