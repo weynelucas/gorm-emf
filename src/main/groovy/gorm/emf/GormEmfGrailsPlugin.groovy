@@ -3,7 +3,7 @@ package gorm.emf
 import gorm.emf.extensions.EFactoryExtensions
 import gorm.emf.extensions.EObjectExtensions
 import gorm.emf.extensions.EReferenceExtensions
-
+import gorm.emf.extensions.MongoClientExtensions
 import gorm.emf.extensions.registry.DynamicExtensionRegistry
 import gorm.emf.interceptors.EObjectInterceptions
 import gorm.emf.interceptors.registry.DynamicInterceptionRegistry
@@ -57,6 +57,8 @@ A set of methods and services to perform persistence like GORM to Java classes g
         }
 
         // Extensions beans
+        mongoClientExtensions(MongoClientExtensions)
+
         eFactoryExtensions(EFactoryExtensions)
 
         eReferenceExtensions(EReferenceExtensions) {
