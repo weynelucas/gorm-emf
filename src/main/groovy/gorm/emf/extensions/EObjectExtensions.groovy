@@ -35,9 +35,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
         def references = self.eClass().EAllReferences
 
 
-        if (objProps.containsKey(InjectedProperties.ID)){
-            outMap[InjectedProperties.REFERENCE] = objProps.get(InjectedProperties.ID).toString()
-        }
+        [InjectedProperties.ID, InjectedProperties.REFERENCE].each { objProps.containsKey(it) ? outMap[it] = objProps.get(it).toString() : null }
 
         outMap[ExternalProperties.TYPE_DISCRIMINATOR] = self.eClass().name
 
