@@ -12,7 +12,6 @@ import static gorm.emf.consts.EObjectConstants.InjectedProperties.ID
 class EObjectMongoPersistenceService implements IEObjectPersistence {
 
     def mongo
-    def grailsApplication = Holders.grailsApplication
 
     @Override
     def insert(EObject object, String collection) {
@@ -29,7 +28,7 @@ class EObjectMongoPersistenceService implements IEObjectPersistence {
         if(id && collection) {
             def query = new BasicDBObject(ID, new ObjectId(id))
             return mongo
-                    .getDatabase(grailsApplication.config.getProperty('grails.mongodb.databaseName'))
+                    .getDatabase()
                     .getCollection(collection)
                     .findOne(query)
         }
