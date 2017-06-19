@@ -41,7 +41,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
 
         attributes.each { EAttribute attr ->
             if (objProps.containsKey(attr.name)) {
-                if(objProps.get(attr.name)) {
+                if(objProps.get(attr.name) != null) {
                     outMap[attr.name] = objProps[attr.name]
                 }
             }
