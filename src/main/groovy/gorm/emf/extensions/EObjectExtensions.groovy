@@ -5,6 +5,7 @@ import gorm.emf.ecore.appenders.EObjectAppendersFactory
 import gorm.emf.ecore.persistence.IEObjectPersistence
 import org.bson.types.ObjectId
 import org.eclipse.emf.ecore.EAttribute
+import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.EStructuralFeature
@@ -111,6 +112,23 @@ class EObjectExtensions extends DynamicExtension<EObject> {
     }
 
     /**
+     * Load a sub type of the given EObject type if is abstract or has derived
+     * classes
+     *
+     * @param className Name of child class to load
+     * @return Type of the EObject child
+     */
+    static loadSubType(Class<EObject> selfType, String className) {
+        if (selfType.isAbstractOrHasDerivedClasses()) {
+            def subType = eObjectService.getEClass(className)
+
+            return selfType.getEClass().isSuperTypeOf(subType) ? subType.instanceClass : null
+        }
+
+        return selfType
+    }
+
+    /**
      * Get a EClass of the given EObject
      *
      * @return EClass corresponding to the given EObject
@@ -130,13 +148,25 @@ class EObjectExtensions extends DynamicExtension<EObject> {
     }
 
     /**
-     * Check if EObject has children (derived classes)
+     * Check if EObject type has children (derived classes)
      *
      * @return Boolean checking if the given EObject has derived classes
      */
     static boolean hasDerivedClasses(Class<EObject> selfType) {
-        def eClass = eObjectService.getEClass(selfType.metaClass.theClass)
+        def eClass = selfType.getEClass()
         eObjectService.hasDerivedClasses(eClass)
+    }
+
+
+    /**
+     * Check if EObject type is abstract or has children (derived classes)
+     *
+     * @return Boolean checking if the given EObject is abstract or has derived classes
+     */
+    static boolean isAbstractOrHasDerivedClasses(Class<EObject> selfType) {
+        EClass eClass = selfType.getEClass()
+
+        eClass.abstract || selfType.hasDerivedClasses()
     }
 
     /**
@@ -144,7 +174,7 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      *
      * @return EObject instance with default values
      */
-    static  newInstance(Class<EObject> selfType) {
+    static newInstance(Class<EObject> selfType) {
         eObjectService.generateDefaultInstance(selfType.metaClass.theClass)
     }
 
@@ -168,7 +198,8 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      * @return EObject instance filled by map
      */
     static newInstance(Class<EObject> selfType, Map map, boolean handleReferences)  {
-        def defaultInstance = selfType.newInstance()
+        boolean mustLoadChild = (selfType.isAbstractOrHasDerivedClasses() && map.containsKey(ExternalProperties.TYPE_DISCRIMINATOR))
+        def defaultInstance = mustLoadChild ? selfType.loadSubType(map.get(ExternalProperties.TYPE_DISCRIMINATOR)).newInstance() : selfType.newInstance()
         defaultInstance.append(map, handleReferences)
     }
 

@@ -27,7 +27,7 @@ class EReferenceManyAppender implements IEObjectAppender {
         def eListData = new BasicEList<EObject>()
 
         appendData.each { data ->
-            def type = reference.loadReferenceType(data.get(TYPE_DISCRIMINATOR, ''))
+            def type = reference.EReferenceType.instanceClass.loadSubType(data.get(TYPE_DISCRIMINATOR, ''))
             eListData.add(type.newInstance(data))
         }
 

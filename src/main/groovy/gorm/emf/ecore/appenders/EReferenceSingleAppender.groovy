@@ -24,7 +24,7 @@ class EReferenceSingleAppender implements IEObjectAppender {
     @Override
     void append(EObject model, EStructuralFeature feature, appendData) {
         def reference = (EReference) feature
-        def type = reference.loadReferenceType(appendData.get(TYPE_DISCRIMINATOR, ''))
+        def type = reference.EReferenceType.instanceClass.loadSubType(appendData.get(TYPE_DISCRIMINATOR, ''))
         model."$reference.name" = type.newInstance(appendData)
     }
 }
