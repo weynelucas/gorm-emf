@@ -1,4 +1,4 @@
-package gorm.emf.interceptors
+package gorm.emf.interceptions
 
 import gorm.emf.ecore.wrappers.EObjectWrapper
 import org.eclipse.emf.common.util.BasicEList

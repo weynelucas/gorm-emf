@@ -5,8 +5,8 @@ import gorm.emf.extensions.EObjectExtensions
 import gorm.emf.extensions.EReferenceExtensions
 import gorm.emf.extensions.MongoClientExtensions
 import gorm.emf.extensions.registry.DynamicExtensionRegistry
-import gorm.emf.interceptors.EObjectInterceptions
-import gorm.emf.interceptors.registry.DynamicInterceptionRegistry
+import gorm.emf.interceptions.EObjectInterceptions
+import gorm.emf.interceptions.registry.DynamicInterceptionRegistry
 import grails.plugins.*
 
 class GormEmfGrailsPlugin extends Plugin {

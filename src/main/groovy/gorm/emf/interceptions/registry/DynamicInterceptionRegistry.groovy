@@ -1,6 +1,6 @@
-package gorm.emf.interceptors.registry
+package gorm.emf.interceptions.registry
 
-import gorm.emf.interceptors.DynamicInterception
+import gorm.emf.interceptions.DynamicInterception
 import grails.util.Holders
 
 /**
