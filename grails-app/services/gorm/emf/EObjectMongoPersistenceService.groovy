@@ -1,9 +1,9 @@
 package gorm.emf
 
 import com.mongodb.BasicDBObject
+import com.mongodb.util.JSON
 import gorm.emf.ecore.persistence.IEObjectPersistence
 import grails.transaction.Transactional
-import grails.util.Holders
 import org.bson.types.ObjectId
 import org.eclipse.emf.ecore.EObject
 import static gorm.emf.consts.EObjectConstants.InjectedProperties.ID
@@ -31,6 +31,18 @@ class EObjectMongoPersistenceService implements IEObjectPersistence {
                     .getDatabase()
                     .getCollection(collection)
                     .findOne(query)
+        }
+
+        return null
+    }
+
+    def find(Map query, String collection) {
+        if (query && collection) {
+            def queryDBObject = JSON.parse((query as grails.converters.JSON).toString())
+            return mongo
+                    .getDatabase()
+                    .getCollection(collection)
+                    .findOne(queryDBObject)
         }
 
         return null

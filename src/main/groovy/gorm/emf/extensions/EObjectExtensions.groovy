@@ -183,21 +183,10 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      * values
      *
      * @param map LinkedHashMap with properties and values to create the instance
-     * @return EObject instance with default values
-     */
-    static newInstance(Class<EObject> selfType, Map map) {
-        selfType.newInstance(map, true)
-    }
-
-    /**
-     * Create an EObject instance based on a given map with properties and
-     * values
-     *
-     * @param map LinkedHashMap with properties and values to create the instance
      * @param handleReferences Boolean to enable/disable EReference appends
      * @return EObject instance filled by map
      */
-    static newInstance(Class<EObject> selfType, Map map, boolean handleReferences)  {
+    static newInstance(Class<EObject> selfType, Map map, boolean handleReferences = true)  {
         boolean mustLoadChild = (selfType.isAbstractOrHasDerivedClasses() && map.containsKey(ExternalProperties.TYPE_DISCRIMINATOR))
         def defaultInstance = mustLoadChild ? selfType.loadSubType(map.get(ExternalProperties.TYPE_DISCRIMINATOR)).newInstance() : selfType.newInstance()
         defaultInstance.append(map, handleReferences)
@@ -207,22 +196,30 @@ class EObjectExtensions extends DynamicExtension<EObject> {
      * Get an EObject instance from database based on id
      *
      * @param id Hash corresponding to EObject identifier
-     * @return EObject instance or null if not found
-     */
-    static find(Class<EObject> selfType, String id) {
-        selfType.find(id, true)
-    }
-
-    /**
-     * Get an EObject instance from database based on id
-     *
-     * @param id Hash corresponding to EObject identifier
      * @param handleReferences Boolean to enable/disable EReference appends
      * @return EObject instance or null if not found
      */
-    static find(Class<EObject> selfType, String id, boolean handleReferences) {
+    static find(Class<EObject> selfType, String id, boolean handleReferences = true) {
         def dbObj = eObjectPersistenceService.findById(id, selfType."$InjectedProperties.COLLECTION")
         if(dbObj) {
+            def obj = selfType.newInstance(dbObj, handleReferences)
+
+            return obj
+        }
+
+        return null
+    }
+
+    /**
+     * Get an EObject instance from database based on query map
+     *
+     * @param query Map with query parameters to find the EObject
+     * @param handleReferences Boolean to enable/disable EReference appends
+     * @return EObject instance or null if not found
+     */
+    static find(Class<EObject> selfType, Map query, boolean handleReferences = true) {
+        def dbObj = eObjectPersistenceService.find(query, selfType."$InjectedProperties.COLLECTION")
+        if (dbObj) {
             def obj = selfType.newInstance(dbObj, handleReferences)
 
             return obj
