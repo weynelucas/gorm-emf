@@ -22,8 +22,20 @@ class EObjectInterceptions implements DynamicInterception {
         if (meta) {
             def referenceType = self.eClass().EAllReferences.find { it.name == propName }?.EReferenceType?.instanceClass
             def result = meta.getProperty(self)
+            boolean hasCollectionProperty
 
-            if(referenceType?.collection) {
+            if(referenceType == null) {
+                return result
+            }
+
+            try {
+                referenceType?.collection
+                hasCollectionProperty = true
+            } catch (MissingPropertyException ignored) {
+                hasCollectionProperty = false
+            }
+
+            if(hasCollectionProperty) {
                 if(result instanceof EList<EObject>) {
                     def eList = new BasicEList()
                     eList.addAllUnique(result.collect { EObject eObj -> eObj.ref ? eObj.eClass().instanceClass.find(eObj.ref) : eObj})
@@ -38,6 +50,8 @@ class EObjectInterceptions implements DynamicInterception {
                     ex.printStackTrace()
                 }
             }
+
+
             return result
         }
     }
